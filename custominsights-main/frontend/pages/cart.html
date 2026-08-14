@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart | Customer Insights Platform</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/toast.css">
+  <script src="../js/toast.js"></script>
+  <style>
+    .cart-layout {
+      display: flex;
+      gap: 30px;
+    }
+
+    .cart-items-section {
+      flex: 1;
+    }
+
+    .cart-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .cart-table th {
+      border-bottom: 2px solid var(--card-border);
+    }
+
+    .cart-table td {
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .product-info img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .product-name a {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .product-name a:hover {
+      color: var(--primary);
+    }
+
+    .product-category {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .qty-input {
+      width: 60px;
+      padding: 6px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      text-align: center;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .actions-links {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .actions-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .actions-links a:hover {
+      color: var(--text-main);
+    }
+
+    .actions-links a.btn-delete:hover {
+      color: #ef4444;
+    }
+
+    /* Summary Side Panel */
+    .summary-panel {
+      width: 380px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      height: fit-content;
+      flex-shrink: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .summary-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    .summary-row.total {
+      border-top: 1px solid var(--card-border);
+      padding-top: 15px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .coupon-box {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border-top: 1px solid var(--card-border);
+      padding-top: 20px;
+    }
+
+    .coupon-box label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .coupon-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .coupon-input-group input {
+      flex: 1;
+      text-transform: uppercase;
+    }
+
+    .coupon-message {
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">Customer Insights Platform</div>
+      <ul class="sidebar-menu">
+        <li><a href="user_dashboard.html">🏠 Dashboard</a></li>
+        <li><a href="products.html">🛍 Products</a></li>
+        <li><a href="wishlist.html">❤️ Wishlist</a></li>
+        <li class="active"><a href="cart.html">🛒 Cart</a></li>
+        <li><a href="order_history.html">📦 Orders</a></li>
+        <li><a href="profile.html">👤 Profile</a></li>
+        <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main-wrapper">
+      <h1>Shopping Bag</h1>
+
+      <div class="cart-layout">
+        <!-- Left Column -->
+        <div class="cart-items-section">
+          <!-- Active Cart Cards -->
+          <div class="cart-card">
+            <h3 style="margin-bottom:15px; font-size:18px;">Active Items</h3>
+            <table class="glass-table">
+              <thead>
+                <tr>
+                  <th style="width: 50%;">Product Details</th>
+                  <th style="width: 20%;">Quantity</th>
+                  <th style="width: 15%;">Price</th>
+                  <th style="width: 15%;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="active-cart-body">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Saved for Later Cards -->
+          <div class="cart-card" id="saved-card" style="display:none;">
+            <h3 style="margin-bottom:15px; font-size:18px; color: var(--text-muted);">Saved For Later</h3>
+            <table class="glass-table">
+              <thead>
+                <tr>
+                  <th style="width: 60%;">Product Details</th>
+                  <th style="width: 20%;">Price</th>
+                  <th style="width: 20%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="saved-cart-body">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Side Panel Summary -->
+        <div class="summary-panel">
+          <h3 class="summary-title">Summary</h3>
+          
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">₹0</span>
+          </div>
+          
+          <div class="summary-row" id="discount-row" style="display: none; color: #ef4444;">
+            <span id="coupon-display-code">Discount</span>
+            <span id="summary-discount">-₹0</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Estimated Shipping</span>
+            <span id="summary-shipping">₹0</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">₹0</span>
+          </div>
+
+          <!-- Coupon Validation Form -->
+          <div class="coupon-box">
+            <label>Promo Coupon Code</label>
+            <div class="coupon-input-group">
+              <input type="text" id="coupon-code-input" class="input-field" placeholder="e.g. SAVE10">
+              <button onclick="applyCouponCode()" class="btn-primary" style="padding: 10px 15px;">Apply</button>
+            </div>
+            <div id="coupon-msg" class="coupon-message"></div>
+          </div>
+
+          <button class="btn-primary" style="width: 100%; margin-top: 15px; padding: 14px;" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/user.js"></script>
+  <script>
+    const userObj = JSON.parse(localStorage.getItem("user"));
+    if (!userObj) {
+      window.location.href = "user_login.html";
+    }
+
+    let subtotal = 0;
+    let shipping = 0;
+    let discountValue = 0;
+    let appliedCoupon = null;
+
+    async function loadCartData() {
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/${userObj._id}`);
+        const data = await res.json();
+        
+        const activeBody = document.getElementById("active-cart-body");
+        const savedBody = document.getElementById("saved-cart-body");
+        const savedCard = document.getElementById("saved-card");
+
+        activeBody.innerHTML = "";
+        savedBody.innerHTML = "";
+
+        if (!data.success || !data.items || data.items.length === 0) {
+          activeBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px 0; color:var(--text-muted);">Your shopping cart is empty.</td></tr>`;
+          savedCard.style.display = "none";
+          updateSummary(0);
+          return;
+        }
+
+        let activeCount = 0;
+        let savedCount = 0;
+        let activeSubtotal = 0;
+
+        data.items.forEach(item => {
+          const p = item.productId;
+          if (!p) return;
+
+          const disc = p.discount || 0;
+          const finalPrice = disc > 0 ? Math.round(p.price * (1 - disc/100)) : p.price;
+
+          const tr = document.createElement("tr");
+
+          if (!item.saveForLater) {
+            activeCount++;
+            activeSubtotal += finalPrice * item.quantity;
+            
+            tr.innerHTML = `
+              <td>
+                <div class="product-info">
+                  <img src="${p.image || 'https://via.placeholder.com/80'}" alt="${p.productName}">
+                  <div>
+                    <div class="product-name"><a href="product_details.html?id=${p._id}">${p.productName}</a></div>
+                    <div class="product-category">${p.category}</div>
+                    <div class="actions-links">
+                      <a class="btn-delete" onclick="removeItem('${item._id}')">Remove</a>
+                      <span style="color:var(--card-border);">|</span>
+                      <a onclick="toggleSave('${item._id}', true)">Save for Later</a>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <input type="number" class="qty-input" value="${item.quantity}" min="1" max="${p.quantity}" onchange="changeQty('${item._id}', this.value)">
+              </td>
+              <td>₹${finalPrice}</td>
+              <td><strong>₹${finalPrice * item.quantity}</strong></td>
+            `;
+            activeBody.appendChild(tr);
+          } else {
+            savedCount++;
+            tr.innerHTML = `
+              <td>
+                <div class="product-info">
+                  <img src="${p.image || 'https://via.placeholder.com/80'}" alt="${p.productName}">
+                  <div>
+                    <div class="product-name"><a href="product_details.html?id=${p._id}">${p.productName}</a></div>
+                    <div class="product-category">${p.category}</div>
+                  </div>
+                </div>
+              </td>
+              <td>₹${finalPrice}</td>
+              <td>
+                <div class="actions-links" style="margin-top:0;">
+                  <a onclick="toggleSave('${item._id}', false)" style="color:var(--primary); font-weight:600;">Move to Active</a>
+                  <span style="color:var(--card-border);">|</span>
+                  <a class="btn-delete" onclick="removeItem('${item._id}')">Remove</a>
+                </div>
+              </td>
+            `;
+            savedBody.appendChild(tr);
+          }
+        });
+
+        if (activeCount === 0) {
+          activeBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px 0; color:var(--text-muted);">No active items.</td></tr>`;
+        }
+
+        if (savedCount > 0) {
+          savedCard.style.display = "block";
+        } else {
+          savedCard.style.display = "none";
+        }
+
+        updateSummary(activeSubtotal);
+
+      } catch (err) {
+        console.error("Cart error:", err);
+      }
+    }
+
+    async function changeQty(itemId, newQty) {
+      if (newQty < 1) return;
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/${itemId}/quantity`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: Number(newQty) })
+        });
+        await loadCartData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function toggleSave(itemId, saveForLater) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/${itemId}/save`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ saveForLater })
+        });
+        await loadCartData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function removeItem(itemId) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/${itemId}`, {
+          method: "DELETE"
+        });
+        await loadCartData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function applyCouponCode() {
+      const code = document.getElementById("coupon-code-input").value.trim();
+      const msg = document.getElementById("coupon-msg");
+      
+      if (!code) {
+        msg.style.color = "#ef4444";
+        msg.textContent = "Please enter a code";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/coupons/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          appliedCoupon = data.coupon;
+          msg.style.color = "#10b981";
+          msg.textContent = `Coupon ${appliedCoupon.code} applied!`;
+          loadCartData();
+        } else {
+          appliedCoupon = null;
+          msg.style.color = "#ef4444";
+          msg.textContent = data.message || "Failed to apply coupon";
+          loadCartData();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function updateSummary(activeSubtotal) {
+      subtotal = activeSubtotal;
+      shipping = subtotal > 500 || subtotal === 0 ? 0 : 40;
+      
+      const discRow = document.getElementById("discount-row");
+      
+      if (appliedCoupon && subtotal > 0) {
+        discRow.style.display = "flex";
+        document.getElementById("coupon-display-code").textContent = `Discount (${appliedCoupon.code})`;
+        
+        if (appliedCoupon.discountType === "percentage") {
+          discountValue = Math.round(subtotal * (appliedCoupon.discountValue / 100));
+        } else {
+          discountValue = appliedCoupon.discountValue;
+        }
+        document.getElementById("summary-discount").textContent = `-₹${discountValue}`;
+      } else {
+        discRow.style.display = "none";
+        discountValue = 0;
+      }
+
+      const total = Math.max(0, subtotal - discountValue + shipping);
+
+      document.getElementById("summary-subtotal").textContent = `₹${subtotal}`;
+      document.getElementById("summary-shipping").textContent = shipping === 0 && subtotal > 0 ? "FREE" : `₹${shipping}`;
+      document.getElementById("summary-total").textContent = `₹${total}`;
+    }
+
+    function proceedToCheckout() {
+      if (subtotal === 0) {
+        alert("Please add items to cart first");
+        return;
+      }
+      
+      if (appliedCoupon) {
+        localStorage.setItem("appliedCoupon", JSON.stringify({
+          code: appliedCoupon.code,
+          discountValue: discountValue
+        }));
+      } else {
+        localStorage.removeItem("appliedCoupon");
+      }
+
+      window.location.href = "checkout.html";
+    }
+
+    loadCartData();
+  </script>
+</body>
+</html>

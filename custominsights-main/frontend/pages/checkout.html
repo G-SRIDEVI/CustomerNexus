@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Customer Insights Platform</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/toast.css">
+  <script src="../js/toast.js"></script>
+  <style>
+    .checkout-layout {
+      display: flex;
+      gap: 30px;
+    }
+
+    .steps-column {
+      flex: 1;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 25px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-main);
+    }
+
+    .step-number {
+      background: var(--primary-gradient);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* Address Selection Styles */
+    .address-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .address-option {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #ffffff;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .address-option:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+
+    .address-option.selected, .address-option:has(input[type="radio"]:checked) {
+      background: #eff6ff !important;
+      border: 2px solid #2563eb !important;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    .address-option input[type="radio"] {
+      margin-top: 3px;
+      accent-color: #2563eb;
+    }
+
+    .address-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #0f172a;
+      font-weight: 500;
+    }
+
+    .new-address-toggle {
+      font-weight: 700;
+      font-size: 14px;
+      color: #2563eb;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .new-address-box {
+      margin-top: 20px;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 20px;
+      display: none;
+    }
+
+    .new-address-box textarea {
+      width: 100%;
+      height: 85px;
+      padding: 12px 16px;
+      background-color: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      resize: none;
+      outline: none;
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #0f172a;
+    }
+
+    .new-address-box textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .new-address-box label {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #475569;
+      cursor: pointer;
+    }
+
+    /* Payment Methods */
+    .payment-option {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .payment-option:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+
+    .payment-option.selected, .payment-option:has(input[type="radio"]:checked) {
+      background: #eff6ff !important;
+      border: 2px solid #2563eb !important;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    .payment-option input[type="radio"] {
+      accent-color: #2563eb;
+    }
+
+    /* Summary Side Panel */
+    .summary-panel {
+      width: 380px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      height: fit-content;
+      flex-shrink: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .summary-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+    }
+
+    .summary-items {
+      margin-bottom: 20px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .summary-item-name {
+      font-weight: 600;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 200px;
+      color: var(--text-main);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .summary-row.total {
+      border-top: 1px solid var(--card-border);
+      padding-top: 15px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">Customer Insights Platform</div>
+      <ul class="sidebar-menu">
+        <li><a href="user_dashboard.html">🏠 Dashboard</a></li>
+        <li><a href="products.html">🛍 Products</a></li>
+        <li><a href="wishlist.html">❤️ Wishlist</a></li>
+        <li><a href="cart.html">🛒 Cart</a></li>
+        <li><a href="order_history.html">📦 Orders</a></li>
+        <li><a href="profile.html">👤 Profile</a></li>
+        <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main-wrapper">
+      <h1>Checkout Page</h1>
+
+      <div class="checkout-layout">
+        <!-- Steps -->
+        <div class="steps-column">
+          <!-- Shipping Address -->
+          <div class="step-card">
+            <div class="step-title">
+              <span class="step-number">1</span>
+              <span>Shipping Address</span>
+            </div>
+            
+            <div class="address-list" id="address-list-container">
+              <!-- Loaded dynamically -->
+            </div>
+
+            <a class="new-address-toggle" onclick="toggleNewAddressForm()">+ Use a New Shipping Address</a>
+            
+            <div class="new-address-box" id="new-address-form">
+              <textarea id="new-address-input" placeholder="Type your full shipping address details here..."></textarea>
+              <label>
+                <input type="checkbox" id="save-new-address-chk" checked>
+                Save this address to my profile
+              </label>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="step-card">
+            <div class="step-title">
+              <span class="step-number">2</span>
+              <span>Choose Payment Method</span>
+            </div>
+            
+            <div class="payment-option selected" onclick="selectPaymentOption(this)">
+              <input type="radio" name="payment_method" value="COD" checked id="pay-cod">
+              <label for="pay-cod" style="margin-left: 10px; cursor: pointer;">
+                <strong style="color: #0f172a;">Cash on Delivery (COD)</strong>
+                <div style="font-size:12px; color:#475569; margin-top:2px;">Pay with cash when your product is delivered.</div>
+              </label>
+            </div>
+
+            <div class="payment-option" onclick="selectPaymentOption(this)">
+              <input type="radio" name="payment_method" value="Card" id="pay-card">
+              <label for="pay-card" style="margin-left: 10px; cursor: pointer;">
+                <strong style="color: #0f172a;">Credit / Debit Card</strong>
+                <div style="font-size:12px; color:#475569; margin-top:2px;">We accept Visa, Mastercard, and RuPay cards.</div>
+              </label>
+            </div>
+
+            <div class="payment-option" onclick="selectPaymentOption(this)">
+              <input type="radio" name="payment_method" value="Netbanking" id="pay-net">
+              <label for="pay-net" style="margin-left: 10px; cursor: pointer;">
+                <strong style="color: #0f172a;">Net Banking</strong>
+                <div style="font-size:12px; color:#475569; margin-top:2px;">Instant checkout via top Indian banking portals.</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-panel">
+          <h3 class="summary-title">Summary</h3>
+          
+          <div class="summary-items" id="summary-items-list">
+            <!-- Loaded dynamically -->
+          </div>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="subtotal-val" style="color:var(--text-main); font-weight:600;">₹0</span>
+          </div>
+
+          <div class="summary-row" id="coupon-row" style="display:none; color:#ef4444;">
+            <span id="coupon-label">Discount</span>
+            <span id="coupon-val">-₹0</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span id="shipping-val" style="color:var(--text-main); font-weight:600;">₹0</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total Payable</span>
+            <span id="total-val">₹0</span>
+          </div>
+
+          <button class="btn-primary" style="width: 100%; margin-top: 20px; padding: 14px;" onclick="placeFinalOrder()">Confirm & Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/user.js"></script>
+  <script>
+    const loggedUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedUser) {
+      window.location.href = "user_login.html";
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const buyNow = urlParams.get("buyNow") === "true";
+    const buyNowProductId = urlParams.get("productId");
+    const buyNowQty = Number(urlParams.get("qty") || 1);
+
+    let checkoutSubtotal = 0;
+    let checkoutShipping = 0;
+    let couponDiscount = 0;
+    let couponCodeApplied = "";
+
+    async function initCheckout() {
+      try {
+        const res = await fetch(`http://localhost:5000/api/users/${loggedUser._id}`);
+        const data = await res.json();
+        const addressList = document.getElementById("address-list-container");
+        addressList.innerHTML = "";
+
+        if (data.success && data.user) {
+          const user = data.user;
+          localStorage.setItem("user", JSON.stringify({ ...loggedUser, ...user }));
+          
+          const addresses = user.addresses || [];
+          if (addresses.length > 0) {
+            addresses.forEach((addr, idx) => {
+              const div = document.createElement("div");
+              div.className = `address-option ${idx === 0 ? "selected" : ""}`;
+              div.setAttribute("onclick", "selectAddressOption(this)");
+              div.innerHTML = `
+                <input type="radio" name="selected_address" value="${addr}" ${idx === 0 ? "checked" : ""}>
+                <div class="address-text">${addr}</div>
+              `;
+              addressList.appendChild(div);
+            });
+          } else if (user.address) {
+            const div = document.createElement("div");
+            div.className = "address-option selected";
+            div.setAttribute("onclick", "selectAddressOption(this)");
+            div.innerHTML = `
+              <input type="radio" name="selected_address" value="${user.address}" checked>
+              <div class="address-text">${user.address}</div>
+            `;
+            addressList.appendChild(div);
+          } else {
+            addressList.innerHTML = `<p style="font-size:14px; color:var(--text-muted);">No saved addresses found. Please enter a shipping address below.</p>`;
+            toggleNewAddressForm();
+          }
+        }
+      } catch (err) {
+        console.error("Address load error:", err);
+      }
+
+      if (buyNow) {
+        try {
+          const res = await fetch(`http://localhost:5000/api/products/${buyNowProductId}`);
+          const data = await res.json();
+          if (data.success && data.product) {
+            const p = data.product;
+            const discount = p.discount || 0;
+            const finalPrice = discount > 0 ? Math.round(p.price * (1 - discount/100)) : p.price;
+            
+            const list = document.getElementById("summary-items-list");
+            list.innerHTML = `
+              <div class="summary-item">
+                <span class="summary-item-name">${p.productName} (x${buyNowQty})</span>
+                <span>₹${finalPrice * buyNowQty}</span>
+              </div>
+            `;
+
+            checkoutSubtotal = finalPrice * buyNowQty;
+            calculateFinalTotals();
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        try {
+          const res = await fetch(`http://localhost:5000/api/cart/${loggedUser._id}`);
+          const data = await res.json();
+          const list = document.getElementById("summary-items-list");
+          list.innerHTML = "";
+
+          if (data.success && data.items) {
+            let activeItems = data.items.filter(item => !item.saveForLater);
+            checkoutSubtotal = 0;
+
+            activeItems.forEach(item => {
+              const p = item.productId;
+              if (!p) return;
+              const discount = p.discount || 0;
+              const finalPrice = discount > 0 ? Math.round(p.price * (1 - discount/100)) : p.price;
+              
+              const itemTotal = finalPrice * item.quantity;
+              checkoutSubtotal += itemTotal;
+
+              const div = document.createElement("div");
+              div.className = "summary-item";
+              div.innerHTML = `
+                <span class="summary-item-name">${p.productName} (x${item.quantity})</span>
+                <span>₹${itemTotal}</span>
+              `;
+              list.appendChild(div);
+            });
+
+            const savedCoupon = JSON.parse(localStorage.getItem("appliedCoupon"));
+            if (savedCoupon) {
+              couponCodeApplied = savedCoupon.code;
+              couponDiscount = savedCoupon.discountValue;
+            }
+
+            calculateFinalTotals();
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+
+    function calculateFinalTotals() {
+      checkoutShipping = checkoutSubtotal > 500 || checkoutSubtotal === 0 ? 0 : 40;
+      
+      const couponRow = document.getElementById("coupon-row");
+      if (couponDiscount > 0) {
+        couponRow.style.display = "flex";
+        document.getElementById("coupon-label").textContent = `Discount (${couponCodeApplied || "Applied"})`;
+        document.getElementById("coupon-val").textContent = `-₹${couponDiscount}`;
+      } else {
+        couponRow.style.display = "none";
+      }
+
+      const total = Math.max(0, checkoutSubtotal - couponDiscount + checkoutShipping);
+
+      document.getElementById("subtotal-val").textContent = `₹${checkoutSubtotal}`;
+      document.getElementById("shipping-val").textContent = checkoutShipping === 0 && checkoutSubtotal > 0 ? "FREE" : `₹${checkoutShipping}`;
+      document.getElementById("total-val").textContent = `₹${total}`;
+    }
+
+    function selectAddressOption(el) {
+      document.querySelectorAll(".address-option").forEach(opt => opt.classList.remove("selected"));
+      el.classList.add("selected");
+      const radio = el.querySelector("input[type='radio']");
+      if (radio) radio.checked = true;
+    }
+
+    function selectPaymentOption(el) {
+      document.querySelectorAll(".payment-option").forEach(opt => opt.classList.remove("selected"));
+      el.classList.add("selected");
+      const radio = el.querySelector("input[type='radio']");
+      if (radio) radio.checked = true;
+    }
+
+    function toggleNewAddressForm() {
+      const box = document.getElementById("new-address-form");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    async function placeFinalOrder() {
+      let finalAddress = "";
+      
+      const radios = document.getElementsByName("selected_address");
+      let selectedSaved = "";
+      for (const r of radios) {
+        if (r.checked) {
+          selectedSaved = r.value;
+          break;
+        }
+      }
+
+      const newAddress = document.getElementById("new-address-input").value.trim();
+      const saveNew = document.getElementById("save-new-address-chk").checked;
+
+      if (newAddress) {
+        finalAddress = newAddress;
+        if (saveNew) {
+          try {
+            await fetch(`http://localhost:5000/api/users/${loggedUser._id}/address`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ address: newAddress })
+            });
+          } catch (err) {
+            console.error("Failed to save address:", err);
+          }
+        }
+      } else if (selectedSaved) {
+        finalAddress = selectedSaved;
+      }
+
+      if (!finalAddress) {
+        alert("Please select or enter a shipping address!");
+        return;
+      }
+
+      const payMethods = document.getElementsByName("payment_method");
+      let selectedPayment = "COD";
+      for (const p of payMethods) {
+        if (p.checked) {
+          selectedPayment = p.value;
+          break;
+        }
+      }
+
+      try {
+        if (buyNow) {
+          const addRes = await fetch("http://localhost:5000/api/cart/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: loggedUser._id,
+              productId: buyNowProductId,
+              quantity: buyNowQty
+            })
+          });
+          const addData = await addRes.json();
+          if (!addData.success) {
+            alert("Failed to place order.");
+            return;
+          }
+        }
+
+        const placeRes = await fetch("http://localhost:5000/api/orders/place", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: loggedUser._id,
+            paymentMethod: selectedPayment,
+            address: finalAddress
+          })
+        });
+        const placeData = await placeRes.json();
+
+        if (placeData.success) {
+          localStorage.removeItem("appliedCoupon");
+          
+          const rewardsEarned = Math.round(checkoutSubtotal / 10);
+          if (rewardsEarned > 0) {
+            const userObjUpdated = {
+              ...loggedUser,
+              rewardPoints: (loggedUser.rewardPoints || 0) + rewardsEarned
+            };
+            localStorage.setItem("user", JSON.stringify(userObjUpdated));
+            
+            await fetch(`http://localhost:5000/api/users/${loggedUser._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ rewardPoints: userObjUpdated.rewardPoints })
+            });
+          }
+
+          alert(`Order Placed Successfully! You earned ${rewardsEarned} reward points 🌟`);
+          window.location.href = "order_history.html";
+        } else {
+          alert(placeData.message || "Failed to place order");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    initCheckout();
+  </script>
+</body>
+</html>

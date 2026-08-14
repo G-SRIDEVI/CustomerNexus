@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | ShopSense Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <script src="../js/toast.js"></script>
+    <style>
+        .back-link {
+            display: inline-block;
+            margin-top: 22px;
+            font-size: 13.5px;
+            color: #60a5fa;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+    <div class="login-box">
+        <h1>Customer Insights Platform</h1>
+        <h2>Admin Console Login</h2>
+
+        <form id="loginForm">
+            <input
+                type="email"
+                id="email"
+                placeholder="Admin Email (e.g. admin@gmail.com)"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit">
+                Login to Console
+            </button>
+        </form>
+
+        <p id="message"></p>
+
+        <a href="index.html" class="back-link">← Back to Marketplace</a>
+    </div>
+</div>
+
+<script src="../js/admin_login.js"></script>
+
+</body>
+
+</html>

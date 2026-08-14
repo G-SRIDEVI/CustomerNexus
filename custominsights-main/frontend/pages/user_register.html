@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration | Customer Insights Platform</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/toast.css">
+  <script src="../js/toast.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #eff6ff 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #1e3a8a;
+    }
+
+    .login-card-wrapper {
+      width: 860px;
+      max-width: 100%;
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px solid #bfdbfe;
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.12);
+      display: flex;
+      overflow: hidden;
+      min-height: 560px;
+    }
+
+    .left-promo-banner {
+      width: 44%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .left-promo-banner h1 {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .left-promo-banner p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+
+    .right-form-section {
+      width: 56%;
+      padding: 40px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #ffffff;
+    }
+
+    .right-form-section h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 5px;
+    }
+
+    .right-form-section .subtitle {
+      font-size: 14px;
+      color: #3b82f6;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .input-label-text {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .custom-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #1e293b;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .custom-input:focus {
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    }
+
+    .btn-sign-in {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-sign-in:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    }
+
+    .signup-text {
+      text-align: center;
+      color: #475569;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    .signup-text a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .signup-text a:hover {
+      text-decoration: underline;
+    }
+
+    .back-eco-link {
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .back-eco-link a {
+      color: #2563eb;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-eco-link a:hover {
+      color: #1e40af;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .login-card-wrapper {
+        flex-direction: column;
+      }
+      .left-promo-banner, .right-form-section {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card-wrapper">
+    <!-- Left Banner -->
+    <div class="left-promo-banner">
+      <h1>Customer Insights<br>Platform</h1>
+      <p>Create a customer profile to access tailored discount alerts, save favorite products to your wishlist, track delivery timelines, and claim reward loyalty points.</p>
+    </div>
+
+    <!-- Right Form -->
+    <div class="right-form-section">
+      <h2>Create Account</h2>
+      <p class="subtitle">Fill in the fields below to register your account.</p>
+
+      <div class="form-group">
+        <label class="input-label-text">USER NAME</label>
+        <input type="text" id="name" class="custom-input" placeholder="e.g. johndoe">
+      </div>
+
+      <div class="form-group">
+        <label class="input-label-text">EMAIL ADDRESS</label>
+        <input type="email" id="email" class="custom-input" placeholder="john@domain.com">
+      </div>
+
+      <div class="form-group">
+        <label class="input-label-text">PHONE NUMBER</label>
+        <input type="text" id="phone" class="custom-input" placeholder="e.g. 9876543210">
+      </div>
+
+      <div class="form-group">
+        <label class="input-label-text">PASSWORD</label>
+        <input type="password" id="password" class="custom-input" placeholder="••••••••">
+      </div>
+
+      <button onclick="registerUser()" class="btn-sign-in">Sign Up</button>
+
+      <div class="signup-text">
+        Already have an account? <a href="user_login.html">Sign In Here</a>
+      </div>
+
+      <div class="back-eco-link">
+        <a href="index.html">← Back to Ecosystem</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/user.js"></script>
+</body>
+</html>

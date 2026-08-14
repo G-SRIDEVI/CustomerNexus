@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products | Customer Insights Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <script src="../js/toast.js"></script>
+    <link rel="stylesheet" href="../css/products.css">
+    <style>
+        .sidebar ul li a {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <h2 style="font-weight: 800; font-size: 18px; color: #ffffff; margin-bottom: 30px; text-transform: uppercase; border-bottom: 1px solid #262626; padding-bottom: 12px;">Customer Insights Platform</h2>
+        <ul>
+            <li><a href="admin_dashboard.html">🏠 Dashboard</a></li>
+            <li><a href="admin_users.html">👥 Manage Users</a></li>
+            <li><a href="admin_vendors.html">🏪 Manage Vendors</a></li>
+            <li><a href="admin_inventory.html">📦 Inventory & Forecast</a></li>
+            <li><a href="admin_products.html">📦 Manage Products</a></li>
+            <li><a href="admin_orders.html">🛒 Manage Orders</a></li>
+            <li><a href="admin_analytics.html">📊 Analytics Insights</a></li>
+            <li><a href="admin_bi.html">📈 BI Dashboard (FastAPI)</a></li>
+            <li><a href="admin_settings.html">⚙ Settings</a></li>
+            <li><a href="#" onclick="logoutAdmin()">🚪 Logout</a></li>
+        </ul>
+        <script>
+            function logoutAdmin() {
+                localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("role");
+                localStorage.removeItem("user");
+                localStorage.removeItem("adminToken");
+                alert("Logged out successfully!");
+                window.location.href = "admin_login.html";
+            }
+        </script>
+    </aside>
+
+    <!-- Main Section -->
+    <main class="main">
+        <h1 style="color: #1e293b; font-weight: 700; font-size: 28px;">Manage Products</h1>
+        
+        <!-- Search -->
+        <div class="top-bar">
+            <input type="text" id="searchProductInput" placeholder="Search products by name or category...">
+        </div>
+
+        <!-- Products Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Vendor</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                <tr>
+                    <td colspan="7" style="color: #64748b; padding: 20px;">Loading products list...</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+</div>
+
+<script src="../js/admin_products.js"></script>
+</body>
+</html>

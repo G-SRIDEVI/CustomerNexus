@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+mlflow
+scikit-learn
+pymongo
+pandas
+numpy
+pytest
+httpx
+pytest-asyncio
+python-multipart

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Portal | ShopSense Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css">
+    <style>
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 42px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+        .form-box { display: none; }
+        .form-box.active { display: block; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 12.5px; color: #34d399; margin-bottom: 6px; font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 13.5px;
+            color: #34d399;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .back-link:hover { color: #ffffff; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">Customer Insights Platform</div>
+    <div class="subtitle">Vendor Management Portal</div>
+
+    <!-- Switcher Tabs -->
+    <div class="tabs">
+        <button id="loginTabBtn" class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+        <button id="registerTabBtn" class="tab-btn" onclick="switchTab('register')">Register Shop</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginFormBox" class="form-box active">
+        <form id="vendorLoginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" placeholder="registered-email@domain.com" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="submit-btn">Login to Shop</button>
+        </form>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registerFormBox" class="form-box">
+        <form id="vendorRegisterForm">
+            <div class="form-group">
+                <label for="regShopName">Shop Name</label>
+                <input type="text" id="regShopName" placeholder="e.g. Smart Electronics" required>
+            </div>
+            <div class="form-group">
+                <label for="regOwnerName">Owner Name</label>
+                <input type="text" id="regOwnerName" placeholder="e.g. John Doe" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email Address</label>
+                <input type="email" id="regEmail" placeholder="vendor@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="regPhone">Phone Number</label>
+                <input type="text" id="regPhone" placeholder="e.g. +91 98765 43210" required>
+            </div>
+            <div class="form-group">
+                <label for="regBusinessType">Business Type</label>
+                <select id="regBusinessType" required>
+                    <option value="">Select Type</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Wholesale">Wholesale</option>
+                    <option value="Distributor">Distributor</option>
+                    <option value="Manufacturer">Manufacturer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password</label>
+                <input type="password" id="regPassword" placeholder="Minimum 6 characters" required>
+            </div>
+            <button type="submit" class="submit-btn">Register Shop</button>
+        </form>
+    </div>
+
+    <!-- Messages -->
+    <div id="messageToast" class="msg-toast"></div>
+
+    <a href="index.html" class="back-link">← Back to Marketplace</a>
+</div>
+
+<script src="../js/vendor_login.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+.top-bar{
+
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+
+}
+
+.top-bar input{
+
+width:300px;
+padding:10px;
+border:1px solid #ccc;
+border-radius:8px;
+
+}
+
+.top-bar button{
+
+background:#2563eb;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+
+}
+
+.top-bar button:hover{
+
+background:#1d4ed8;
+
+}
+
+.edit{
+
+background:green;
+color:white;
+border:none;
+padding:8px 12px;
+margin-right:5px;
+cursor:pointer;
+border-radius:6px;
+
+}
+
+.delete{
+
+background:red;
+color:white;
+border:none;
+padding:8px 12px;
+cursor:pointer;
+border-radius:6px;
+
+}

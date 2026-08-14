@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login | ShopSense Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/toast.css">
+  <script src="../js/toast.js"></script>
+  <style>
+    .login-card-wrapper {
+      width: 880px;
+      max-width: 100%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      display: flex;
+      overflow: hidden;
+      min-height: 520px;
+    }
+    .left-promo-banner {
+      width: 44%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4f46e5 100%);
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .left-promo-banner h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+    .right-form-section {
+      width: 56%;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .right-form-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .right-form-section .subtitle {
+      font-size: 14px;
+      color: #60a5fa;
+      margin-bottom: 28px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .input-label-text { font-size: 11.5px; font-weight: 700; color: #60a5fa; letter-spacing: 0.8px; }
+    .forgot-link { font-size: 13px; color: #60a5fa; text-decoration: none; font-weight: 600; }
+    .forgot-link:hover { color: #ffffff; text-decoration: underline; }
+    .custom-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+    }
+    .custom-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+    .btn-sign-in {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    }
+    .signup-text { text-align: center; color: #94a3b8; font-size: 14px; margin-top: 24px; }
+    .signup-text a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 4px; }
+    .signup-text a:hover { text-decoration: underline; }
+    .back-eco-link { text-align: center; margin-top: 16px; }
+    .back-eco-link a { color: #60a5fa; font-size: 13px; text-decoration: none; font-weight: 600; }
+    .back-eco-link a:hover { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="login-card-wrapper">
+    <!-- Left Banner -->
+    <div class="left-promo-banner">
+      <h1>Customer Insights<br>Platform</h1>
+      <p>Enter our interactive retail center. Access custom-curated catalogs, track order fulfillment, redeem rewards, and checkout securely.</p>
+    </div>
+
+    <!-- Right Form -->
+    <div class="right-form-section">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Log in to access your dashboard and shopping bag.</p>
+
+      <div class="form-group">
+        <div class="label-row">
+          <span class="input-label-text">EMAIL ADDRESS</span>
+        </div>
+        <input type="email" id="email" class="custom-input" placeholder="name@domain.com">
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <span class="input-label-text">PASSWORD</span>
+          <a href="user_forgot_password.html" class="forgot-link">Forgot Password?</a>
+        </div>
+        <input type="password" id="password" class="custom-input" placeholder="••••••••">
+      </div>
+
+      <button onclick="loginUser()" class="btn-sign-in">Sign In</button>
+
+      <div class="signup-text">
+        Don't have an account? <a href="user_register.html">Sign Up Here</a>
+      </div>
+
+      <div class="back-eco-link">
+        <a href="index.html">← Back to Ecosystem</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/user.js"></script>
+</body>
+</html>

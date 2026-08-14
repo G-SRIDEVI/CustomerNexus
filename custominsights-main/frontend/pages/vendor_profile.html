@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+      // Vendor Access Check Guard
+      (function() {
+        const vendorObj = localStorage.getItem("vendor");
+        const role = localStorage.getItem("role");
+        if (!vendorObj || role !== "vendor") {
+          alert("Access Denied! Please log in as a vendor first.");
+          window.location.href = "vendor_login.html";
+        }
+      })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Console | Customer Insights Platform</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts Outfit & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/vendor_dashboard.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <script src="../js/toast.js"></script>
+</head>
+<body>
+
+<div class="app-layout">
+    
+    <!-- Left Sidebar (Fixed) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>ShopSense Vendor</h2>
+            <span>Merchant Portal</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="vendor_dashboard.html" class="menu-item active" data-section="dashboard">🏠 Dashboard</a></li>
+            <li><a href="vendor_products.html" class="menu-item" data-section="products">📦 My Products</a></li>
+            <li><a href="vendor_orders.html" class="menu-item" data-section="orders">🛒 Customer Orders</a></li>
+            <li><a href="vendor_analytics.html" class="menu-item" data-section="analytics">📊 Vendor Analytics & ML</a></li>
+            <li><a href="vendor_reviews.html" class="menu-item" data-section="reviews">⭐ Customer Reviews</a></li>
+            <li><a href="vendor_offers.html" class="menu-item" data-section="offers">🎁 Offers & Coupons</a></li>
+            <li><a href="vendor_profile.html" class="menu-item" data-section="profile">👤 Shop Profile</a></li>
+            <li><a href="vendor_settings.html" class="menu-item" data-section="settings">⚙ Console Settings</a></li>
+            <li><a href="#" class="menu-item logout-link" onclick="logoutVendor()">🚪 Logout</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="search-bar">
+                <input type="text" placeholder="Search across console...">
+            </div>
+            <div class="nav-right">
+                <span class="notify-bell" onclick="alert('No new notifications.')">🔔</span>
+                <div class="nav-vendor-details">
+                    <span id="navVendorName" class="vendor-name-title">Loading Vendor...</span>
+                    <span id="navCurrentDate" class="current-date-span">Today</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Dashboard Sections Container -->
+        <main class="content-view">
+            
+            <!-- SECTION 1: DASHBOARD -->
+            <section id="dashboard" class="content-section active">
+                <h1 class="section-title">Dashboard Overview</h1>
+                
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <div class="card card-grad-1">
+                        <div class="card-icon">📦</div>
+                        <div>
+                            <h3>Total Products</h3>
+                            <p id="cardTotalProducts">0</p>
+                            <span class="card-trend">Stable</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-2">
+                        <div class="card-icon">🛒</div>
+                        <div>
+                            <h3>Total Orders</h3>
+                            <p id="cardTotalOrders">0</p>
+                            <span class="card-trend text-up">↑ Grow</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-3">
+                        <div class="card-icon">💰</div>
+                        <div>
+                            <h3>Total Sales</h3>
+                            <p id="cardTotalSales">₹0</p>
+                            <span class="card-trend text-up">↑ Live</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-4">
+                        <div class="card-icon">📈</div>
+                        <div>
+                            <h3>Monthly Revenue</h3>
+                            <p id="cardMonthlyRevenue">₹0</p>
+                            <span class="card-trend text-up">↑ 12%</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-5">
+                        <div class="card-icon">⭐</div>
+                        <div>
+                            <h3>Average Rating</h3>
+                            <p id="cardAvgRating">0.0</p>
+                            <span class="card-trend">Top Tier</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-6">
+                        <div class="card-icon">⚠️</div>
+                        <div>
+                            <h3>Low Stock</h3>
+                            <p id="cardLowStock">0</p>
+                            <span class="card-trend text-down">Alert</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-7">
+                        <div class="card-icon">⏳</div>
+                        <div>
+                            <h3>Pending Orders</h3>
+                            <p id="cardPendingOrders">0</p>
+                            <span class="card-trend text-down">Action</span>
+                        </div>
+                    </div>
+                    <div class="card card-grad-8">
+                        <div class="card-icon">🔥</div>
+                        <div>
+                            <h3>Today's Sales</h3>
+                            <p id="cardTodaySales">₹0</p>
+                            <span class="card-trend text-up">↑ Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-box">
+                        <h3>Monthly Sales Volume</h3>
+                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="monthlySalesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Revenue Distribution</h3>
+                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Product Category Shares</h3>
+                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: MY PRODUCTS -->
+            <section id="products" class="content-section">
+                <div class="section-header-row">
+                    <h1 class="section-title">My Products Catalog</h1>
+                    <button class="action-btn btn-primary" onclick="switchToAddProductTab()">➕ Add Product</button>
+                </div>
+                
+                <!-- Filter Row -->
+                <div class="table-filters">
+                    <input type="text" id="productSearch" placeholder="Search products by name...">
+                    <select id="productCategoryFilter">
+                        <option value="All">All Categories</option>
+                    </select>
+                    <select id="productStockFilter">
+                        <option value="All">All Stock Levels</option>
+                        <option value="InStock">In Stock</option>
+                        <option value="LowStock">Low Stock (&lt; 10)</option>
+                        <option value="OutOfStock">Out of Stock</option>
+                    </select>
+                    <select id="productSort">
+                        <option value="None">Sort By Price</option>
+                        <option value="LowHigh">Price: Low to High</option>
+                        <option value="HighLow">Price: High to Low</option>
+                    </select>
+                </div>
+
+                <!-- Products Table -->
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Product Image</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Rating</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 20px;">Fetching products...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination" id="productsPagination"></div>
+            </section>
+
+            <!-- SECTION 2B: ADD / EDIT PRODUCT FORM -->
+            <section id="addProduct" class="content-section">
+                <h1 class="section-title" id="productFormTitle">Add New Product</h1>
+                <div class="profile-section-card" style="width: 100%; margin-bottom: 30px;">
+                    <form id="productForm">
+                        <input type="hidden" id="modalProductId">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="prodName">Product Name</label>
+                                <input type="text" id="prodName" required placeholder="e.g. Smart Watch">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodCategory">Category</label>
+                                <select id="prodCategory" required>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Grocery">Grocery</option>
+                                    <option value="Beauty">Beauty</option>
+                                    <option value="Home Decor">Home Decor</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="prodDesc">Description</label>
+                                <input type="text" id="prodDesc" required placeholder="Describe product details...">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodPrice">Price (₹)</label>
+                                <input type="number" id="prodPrice" required min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodStock">Stock Quantity</label>
+                                <input type="number" id="prodStock" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodImage">Product Image Link</label>
+                                <input type="text" id="prodImage" required placeholder="Image link URL">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodBrand">Brand</label>
+                                <input type="text" id="prodBrand" placeholder="e.g. Samsung">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodSku">SKU Code</label>
+                                <input type="text" id="prodSku" placeholder="e.g. SK-4892">
+                            </div>
+                            <div class="form-group">
+                                <label for="prodWeight">Weight (kg)</label>
+                                <input type="text" id="prodWeight" placeholder="e.g. 0.4">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="prodDim">Dimensions (L x W x H)</label>
+                                <input type="text" id="prodDim" placeholder="e.g. 10x15x5 cm">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 24px; max-width: 400px;">
+                            <button type="submit" class="submit-btn" style="background: #3b82f6;">Save Product</button>
+                            <button type="button" class="submit-btn" style="background: #64748b;" onclick="cancelProductEdit()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ORDERS -->
+            <section id="orders" class="content-section">
+                <h1 class="section-title">Customer Orders</h1>
+                
+                <!-- Orders Table -->
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Product Details</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                                <th>Payment</th>
+                                <th>Order Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 20px;">Fetching orders...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="ordersPagination"></div>
+            </section>
+
+
+            <!-- SECTION 5: VENDOR ANALYTICS (INLINE SPA EMBEDDED TAB) -->
+            <section id="analytics" class="content-section">
+                
+                <!-- Banner Header -->
+                <div class="analytics-header-banner">
+                    <div>
+                        <h1 style="margin:0;"><i class="fas fa-chart-line"></i> Vendor Sales Intelligence</h1>
+                        <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Live marketplace revenue analysis, demand forecasts & stock predictions</p>
+                    </div>
+                    <div style="display:flex; gap:12px;">
+                        <button class="btn-action-glow" onclick="refreshVendorAnalyticsMetrics()">
+                            <i class="fas fa-sync-alt"></i> Sync Fast API Metrics
+                        </button>
+                        <button class="btn-action-glow" style="background:#ffffff; color:#334155; border:1px solid #cbd5e1;" onclick="window.print()">
+                            <i class="fas fa-print"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Cards -->
+                <div class="analytics-cards-grid">
+                    <div class="stat-card sales">
+                        <div class="icon-box"><i class="fas fa-dollar-sign"></i></div>
+                        <h3>Total Shop Revenue</h3>
+                        <p id="vendorTotalRevenue">₹1,48,500.00</p>
+                    </div>
+                    <div class="stat-card revenue">
+                        <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
+                        <h3>Completed Orders</h3>
+                        <p id="vendorTotalOrders">42</p>
+                    </div>
+                    <div class="stat-card orders">
+                        <div class="icon-box"><i class="fas fa-calculator"></i></div>
+                        <h3>Average Order Value</h3>
+                        <p id="vendorAvgOrder">₹3,535.71</p>
+                    </div>
+                    <div class="stat-card growth">
+                        <div class="icon-box"><i class="fas fa-percent"></i></div>
+                        <h3>Estimated Profit Margin</h3>
+                        <p id="vendorProfitMargin">₹22,275.00</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section 1 -->
+                <div class="charts-double-grid">
+                    <div class="chart-card-box">
+                        <h2 style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>📈 Monthly Sales & Projections</span>
+                            <span style="font-size: 12px; font-weight: normal; color: #64748b;">FastAPI + MLflow Engine</span>
+                        </h2>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="vendorSalesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card-box">
+                        <h2 style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>📦 Category Revenue Split</span>
+                            <span style="font-size: 12px; font-weight: normal; color: #64748b;">Real-time</span>
+                        </h2>
+                        <div style="position: relative; height: 260px; width: 100%; margin-top: 20px;">
+                            <canvas id="vendorRevenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section 2 & Benchmarking -->
+                <div class="charts-double-grid" style="grid-template-columns: 0.9fr 1.1fr;">
+                    <div class="chart-card-box">
+                        <h2 style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>📊 Stock Level Inventory Health</span>
+                            <span style="font-size: 12px; font-weight: normal; color: #64748b;">Stock Alerts</span>
+                        </h2>
+                        <div style="position: relative; height: 260px; width: 100%;">
+                            <canvas id="vendorStockChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card-box">
+                        <h2 style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>🏆 Marketplace Vendor Benchmarking</span>
+                            <span style="font-size: 12px; color: #10b981; font-weight: 600;"><i class="fas fa-award"></i> Rank #1 Live</span>
+                        </h2>
+                        <div style="overflow-x: auto;">
+                            <table class="benchmarking-table" id="inlineBenchmarkingTable">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Vendor Shop</th>
+                                        <th>Market GMV</th>
+                                        <th>Orders</th>
+                                        <th>Fulfillment Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading benchmarking data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- SECTION 6: REVIEWS (OVERHAULED STYLISH UI) -->
+            <section id="reviews" class="content-section">
+                <div class="section-header-row">
+                    <div>
+                        <h1 class="section-title" style="margin: 0;">⭐ Customer Reviews & Ratings</h1>
+                        <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Moderate feedback, customer ratings & merchant replies</p>
+                    </div>
+                    <div style="font-weight: 700; color: #1e3a8a; font-size: 16px; background: #ffffff; border: 1px solid #bfdbfe; padding: 10px 18px; border-radius: 12px;">
+                        Average Score: <span style="color: #f59e0b; font-size: 18px;">★ 4.8</span> / 5.0
+                    </div>
+                </div>
+                
+                <div class="reviews-grid" id="reviewsContainer">
+                    <p style="color: #64748b; padding: 20px;">Loading customer feedback...</p>
+                </div>
+            </section>
+
+            <!-- SECTION 7: OFFERS -->
+            <section id="offers" class="content-section">
+                <h1 class="section-title">Offers & Coupons</h1>
+                
+                <div class="offers-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Create Coupon Card -->
+                    <div class="offer-form-box" style="background: white; border-radius: 16px; border: 1px solid #bfdbfe; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin-bottom: 16px;">🎁 Create New Offer Coupon</h3>
+                        <form id="createOfferForm">
+                            <div class="form-group">
+                                <label for="offerCoupon">Coupon Code</label>
+                                <input type="text" id="offerCoupon" placeholder="e.g. SHOPFLAT20" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="offerDiscount">Discount Percentage (%)</label>
+                                <input type="number" id="offerDiscount" min="1" max="100" placeholder="e.g. 20" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="offerStart">Start Date</label>
+                                <input type="date" id="offerStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="offerEnd">End Date</label>
+                                <input type="date" id="offerEnd" required>
+                            </div>
+                            <button type="submit" class="submit-btn" style="background: #3b82f6; width: 100%;">Create & Enable Coupon</button>
+                        </form>
+                    </div>
+
+                    <!-- Active Coupons List -->
+                    <div class="offer-form-box" style="background: white; border-radius: 16px; border: 1px solid #bfdbfe; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin-bottom: 16px;">📜 Active Coupon Offers</h3>
+                        <div class="table-wrapper">
+                            <table class="list-table">
+                                <thead>
+                                    <tr>
+                                        <th>Coupon</th>
+                                        <th>Discount</th>
+                                        <th>Validity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="couponsListBody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: #64748b; padding: 12px;">No active coupon offers.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: PROFILE -->
+            <section id="profile" class="content-section">
+                <h1 class="section-title">Shop Profile</h1>
+                
+                <form id="vendorProfileForm" class="profile-layout-box">
+                    <div class="profile-section-card">
+                        <h3>🏪 Shop Information</h3>
+                        <div class="form-group">
+                            <label for="profShopName">Shop Name</label>
+                            <input type="text" id="profShopName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profOwnerName">Owner Name</label>
+                            <input type="text" id="profOwnerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profEmail">Registered Email</label>
+                            <input type="email" id="profEmail" readonly style="background: #e2e8f0;">
+                        </div>
+                        <div class="form-group">
+                            <label for="profPhone">Contact Phone</label>
+                            <input type="text" id="profPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profBusinessType">Business Type</label>
+                            <input type="text" id="profBusinessType" required>
+                        </div>
+                    </div>
+
+                    <div class="profile-section-card">
+                        <h3>💳 Verification & Banking details</h3>
+                        <div class="form-group">
+                            <label for="profGst">GST Registration Number</label>
+                            <input type="text" id="profGst" placeholder="Enter GSTIN Number">
+                        </div>
+                        <div class="form-group">
+                            <label for="profAddress">Business Address</label>
+                            <input type="text" id="profAddress" placeholder="Physical Address">
+                        </div>
+                        <div class="form-group">
+                            <label for="profBank">Bank Account Number</label>
+                            <input type="text" id="profBank" placeholder="IFSC & Account details">
+                        </div>
+                        <div class="form-group">
+                            <label for="profUpi">UPI Payment ID</label>
+                            <input type="text" id="profUpi" placeholder="UPI Identifier (e.g. shopsense@upi)">
+                        </div>
+                        <div class="form-group">
+                            <label for="profLogo">Shop Logo Image URL</label>
+                            <input type="text" id="profLogo" placeholder="Logo Link URL">
+                        </div>
+                        <button type="submit" class="submit-btn" style="background: #10b981; width: 100%; margin-top: 10px;">💾 Save Profile details</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECTION 9: SETTINGS -->
+            <section id="settings" class="content-section">
+                <h1 class="section-title">Console Settings</h1>
+                
+                <div class="settings-box">
+                    <!-- Change password -->
+                    <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; margin-bottom: 20px;">
+                        <div>
+                            <h4>Change Account Password</h4>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Update your merchant credential passcode.</p>
+                        </div>
+                        <div>
+                            <input type="password" id="setNewPassword" placeholder="Enter new password" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;">
+                            <button class="action-btn btn-primary" onclick="changeVendorPassword()" style="margin-left: 8px;">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- Enable Notifications -->
+                    <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; margin-bottom: 20px;">
+                        <div>
+                            <h4>Enable Order Alert Notifications</h4>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Receive audio alerts upon new customer checkouts.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; margin-bottom: 20px;">
+                        <div>
+                            <h4>Dark Mode Interface</h4>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Switch themes for late night monitoring.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="setDarkMode" onchange="toggleDarkTheme()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                        <div>
+                            <h4 style="color: #dc2626;">Danger Zone: Delete Vendor Account</h4>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Permanently terminate registration and delete all products.</p>
+                        </div>
+                        <button class="action-btn btn-danger" onclick="deleteVendorAccount()">Delete Account</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 Customer Insights Platform Vendor Portal. All rights reserved.</p>
+        </footer>
+    </div>
+</div>
+
+<!-- End of app content sections -->
+
+<script src="../js/vendor_dashboard.js"></script>
+</body>
+</html>

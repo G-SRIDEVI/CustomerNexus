@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Products | Customer Insights Platform</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/toast.css">
+  <script src="../js/toast.js"></script>
+  <style>
+    .content-layout {
+      display: flex;
+      gap: 30px;
+    }
+
+    /* Filter Panel */
+    .filter-panel {
+      width: 290px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      flex-shrink: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      height: fit-content;
+    }
+
+    .filter-group {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .filter-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .filter-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .price-range {
+      display: flex;
+      gap: 10px;
+    }
+
+    .price-range input {
+      width: 50%;
+    }
+
+    /* Sorting & Listing */
+    .catalog-area {
+      flex: 1;
+    }
+
+    .sorting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: var(--card-bg);
+      padding: 14px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .sorting-row span {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .sorting-row select {
+      padding: 8px 12px;
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .discount-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 6px;
+      z-index: 5;
+    }
+
+    .card-img-box {
+      width: 100%;
+      height: 190px;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .card-img-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .card-details {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-category {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: #eab308;
+      margin-bottom: 12px;
+    }
+
+    .card-rating span {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .card-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .card-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-price-old {
+      font-size: 13px;
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .card-vendor {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      border-top: 1px solid var(--card-border);
+      padding-top: 12px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .card-actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-cart {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .btn-wish {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--card-border) !important;
+    }
+
+    .btn-wish:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">Customer Insights Platform</div>
+      <ul class="sidebar-menu">
+        <li><a href="user_dashboard.html">🏠 Dashboard</a></li>
+        <li class="active"><a href="products.html">🛍 Browse Products</a></li>
+        <li><a href="wishlist.html">❤️ Wishlist</a></li>
+        <li><a href="cart.html">🛒 Cart</a></li>
+        <li><a href="order_history.html">📦 My Orders</a></li>
+        <li><a href="profile.html">👤 My Profile</a></li>
+        <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <div class="header-bar">
+        <h1 style="font-size: 32px; font-weight: 700; color:var(--text-main);">Storefront Catalog</h1>
+      </div>
+
+      <div class="content-layout">
+        <!-- Filters Sidebar -->
+        <div class="filter-panel">
+          <h3 style="margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">Filter Panel</h3>
+          
+          <div class="filter-group">
+            <label>Search Product</label>
+            <input type="text" id="search-input" class="input-field" placeholder="Type keyword...">
+          </div>
+
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="category-select" class="input-field">
+              <option value="All">All Categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Home & Kitchen">Home & Kitchen</option>
+              <option value="Books">Books</option>
+              <option value="Beauty">Beauty & Health</option>
+              <option value="Sports">Sports & Outdoors</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Brand</label>
+            <input type="text" id="brand-input" class="input-field" placeholder="e.g. Apple, Nike">
+          </div>
+
+          <div class="filter-group">
+            <label>Price Range (₹)</label>
+            <div class="price-range">
+              <input type="number" id="price-min" class="input-field" placeholder="Min" min="0">
+              <input type="number" id="price-max" class="input-field" placeholder="Max" min="0">
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label>Minimum Rating</label>
+            <select id="rating-select" class="input-field">
+              <option value="">Any Rating</option>
+              <option value="4">4★ & above</option>
+              <option value="3">3★ & above</option>
+              <option value="2">2★ & above</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Minimum Discount</label>
+            <select id="discount-select" class="input-field">
+              <option value="">Any Discount</option>
+              <option value="10">10% Off or more</option>
+              <option value="30">30% Off or more</option>
+              <option value="50">50% Off or more</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Availability</label>
+            <select id="availability-select" class="input-field">
+              <option value="">All Products</option>
+              <option value="in_stock">In Stock Only</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="applyFilters()">Apply Filters</button>
+        </div>
+
+        <!-- Catalog Listing -->
+        <div class="catalog-area">
+          <div class="sorting-row">
+            <span id="product-count" style="color:var(--text-muted);">Showing 0 products</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <label style="font-size: 14px; font-weight: 600; color:var(--text-muted); text-transform:uppercase;">Sort By</label>
+              <select id="sort-select" onchange="applyFilters()">
+                <option value="newest">New Arrivals</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="highest_rated">Highest Rated</option>
+                <option value="best_selling">Best Selling</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="product-grid" id="product-grid">
+            <!-- Loaded via javascript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/user.js"></script>
+  <script>
+    const loggedUser = JSON.parse(localStorage.getItem("user"));
+
+    async function loadCatalog(params = {}) {
+      try {
+        const queryParams = new URLSearchParams(params).toString();
+        const res = await fetch(`http://localhost:5000/api/products?${queryParams}`);
+        const data = await res.json();
+
+        const grid = document.getElementById("product-grid");
+        grid.innerHTML = "";
+
+        if (!data.success || !data.products || data.products.length === 0) {
+          grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px 0; font-size:15px;">No products match your filters.</p>`;
+          document.getElementById("product-count").textContent = "Showing 0 products";
+          return;
+        }
+
+        document.getElementById("product-count").textContent = `Showing ${data.products.length} products`;
+
+        data.products.forEach(p => {
+          const discount = p.discount || 0;
+          const discountedPrice = discount > 0 ? Math.round(p.price * (1 - discount/100)) : p.price;
+          
+          let stars = "";
+          const ratingVal = p.rating || 0;
+          for (let i = 1; i <= 5; i++) {
+            stars += i <= Math.round(ratingVal) ? "★" : "☆";
+          }
+
+          const card = document.createElement("div");
+          card.className = "product-card";
+          
+          let discountTag = "";
+          if (discount > 0) {
+            discountTag = `<div class="discount-tag">${discount}% OFF</div>`;
+          }
+
+          card.innerHTML = `
+            ${discountTag}
+            <div class="card-img-box" onclick="viewDetails('${p._id}')">
+              <img src="${p.image || 'https://via.placeholder.com/180'}" alt="${p.productName}">
+            </div>
+            <div class="card-details">
+              <div class="card-category">${p.category}</div>
+              <div class="card-title" onclick="viewDetails('${p._id}')" title="${p.productName}">${p.productName}</div>
+              <div class="card-rating">
+                ${stars} <span>(${p.numReviews || 0})</span>
+              </div>
+              <div class="card-price-row">
+                <span class="card-price">₹${p.price}</span>
+                ${discount > 0 ? `<span class="card-price-old">₹${Math.round(p.price / (1 - discount/100))}</span>` : ""}
+              </div>
+              <div class="card-vendor">Shop: <strong>${p.vendorId ? p.vendorId.shopName : 'ShopSense Vendor'}</strong></div>
+              <div class="card-actions">
+                <button class="btn-cart" onclick="addToCart('${p._id}', event)">🛒 Cart</button>
+                <button class="btn-wish" onclick="addToWishlist('${p._id}', event)">❤️ Wishlist</button>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Error loading products:", err);
+      }
+    }
+
+    function viewDetails(productId) {
+      let viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+      viewed = viewed.filter(id => id !== productId);
+      viewed.unshift(productId);
+      localStorage.setItem("recentlyViewed", JSON.stringify(viewed));
+      
+      window.location.href = `product_details.html?id=${productId}`;
+    }
+
+    function applyFilters() {
+      const filters = {};
+      
+      const search = document.getElementById("search-input").value.trim();
+      const category = document.getElementById("category-select").value;
+      const brand = document.getElementById("brand-input").value.trim();
+      const priceMin = document.getElementById("price-min").value;
+      const priceMax = document.getElementById("price-max").value;
+      const rating = document.getElementById("rating-select").value;
+      const discount = document.getElementById("discount-select").value;
+      const availability = document.getElementById("availability-select").value;
+      const sort = document.getElementById("sort-select").value;
+
+      if (search) filters.search = search;
+      if (category !== "All") filters.category = category;
+      if (brand) filters.brand = brand;
+      if (priceMin) filters.priceMin = priceMin;
+      if (priceMax) filters.priceMax = priceMax;
+      if (rating) filters.rating = rating;
+      if (discount) filters.discount = discount;
+      if (availability) filters.availability = availability;
+      if (sort) filters.sort = sort;
+
+      loadCatalog(filters);
+    }
+
+    async function addToCart(productId, event) {
+      event.stopPropagation();
+      if (!loggedUser) {
+        alert("Please login first");
+        window.location.href = "user_login.html";
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:5000/api/cart/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: loggedUser._id,
+            productId: productId,
+            quantity: 1
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("Added to cart!");
+        } else {
+          alert(data.message || "Failed to add to cart");
+        }
+      } catch (err) {
+        console.error("Cart error:", err);
+      }
+    }
+
+    async function addToWishlist(productId, event) {
+      event.stopPropagation();
+      if (!loggedUser) {
+        alert("Please login first");
+        window.location.href = "user_login.html";
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:5000/api/wishlist/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: loggedUser._id,
+            productId: productId
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("Added to wishlist!");
+        } else {
+          alert(data.message || "Failed to add to wishlist");
+        }
+      } catch (err) {
+        console.error("Wishlist error:", err);
+      }
+    }
+
+    loadCatalog();
+  </script>
+</body>
+</html>

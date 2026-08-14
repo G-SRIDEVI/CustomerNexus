@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vendor Registration - Customer Insights Platform</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <h1>Vendor Registration</h1>
+  <form id="vendor-register-form">
+    <label>Shop Name:</label>
+    <input type="text" id="shopName" required><br>
+
+    <label>Owner Name:</label>
+    <input type="text" id="ownerName" required><br>
+
+    <label>Business Type:</label>
+    <input type="text" id="businessType" required><br>
+
+    <label>Email:</label>
+    <input type="email" id="email" required><br>
+
+    <label>Password:</label>
+    <input type="password" id="password" required><br>
+
+    <label>Phone:</label>
+    <input type="text" id="phone"><br>
+
+    <button type="submit">Register Vendor</button>
+  </form>
+
+  <script>
+    document.getElementById("vendor-register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const vendorData = {
+        shopName: document.getElementById("shopName").value,
+        ownerName: document.getElementById("ownerName").value,
+        businessType: document.getElementById("businessType").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        phone: document.getElementById("phone").value,
+      };
+
+      const res = await fetch("/api/vendors/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(vendorData),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Vendor registered successfully!");
+        localStorage.setItem("vendor", JSON.stringify(data.vendor));
+        window.location.href = "vendor_products.html";
+      } else {
+        alert(data.message || "Vendor registration failed");
+      }
+    });
+  </script>
+</body>
+</html>

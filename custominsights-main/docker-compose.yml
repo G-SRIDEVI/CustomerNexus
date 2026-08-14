@@ -1,0 +1,87 @@
+version: '3.9'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ShopSense – Multi-Service Docker Compose
+# Services: Node.js Express Backend (port 5000) + Python FastAPI (port 8000)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ──────────────────────────────────────────────────────
+  # Service 1: Node.js Express E-Commerce Backend
+  # ──────────────────────────────────────────────────────
+  node-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: shopsense-node:latest
+    container_name: shopsense_node_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      # Persist uploaded files between container restarts
+      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/products"]
+      interval: 30s
+      timeout: 10s
+      start_period: 20s
+      retries: 3
+    networks:
+      - shopsense-network
+
+  # ──────────────────────────────────────────────────────
+  # Service 2: Python FastAPI Analytics Engine
+  # ──────────────────────────────────────────────────────
+  fastapi-analytics:
+    build:
+      context: ./backend/python_app
+      dockerfile: Dockerfile
+    image: shopsense-fastapi:latest
+    container_name: shopsense_fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - MONGO_URI=${MONGO_URI}
+      - ENVIRONMENT=production
+      - MLFLOW_TRACKING_URI=sqlite:///app/mlflow.db
+    volumes:
+      # Persist MLflow experiment runs and registry
+      - mlflow_data:/app/mlruns
+      # Persist SQLite analytical database
+      - sqlite_data:/app/data
+    restart: unless-stopped
+    depends_on:
+      node-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 25s
+      retries: 3
+    networks:
+      - shopsense-network
+
+# ──────────────────────────────────────────────────────
+# Named Volumes (Persisted across container restarts)
+# ──────────────────────────────────────────────────────
+volumes:
+  mlflow_data:
+    driver: local
+  sqlite_data:
+    driver: local
+
+# ──────────────────────────────────────────────────────
+# Internal Network (services communicate by name)
+# ──────────────────────────────────────────────────────
+networks:
+  shopsense-network:
+    driver: bridge
